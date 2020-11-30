@@ -9,6 +9,8 @@ import PlanetSection from './components/planet-section/planet-section';
 import StarshipSection from './components/starship-section/starship-section';
 import {SwapiServiceProvider} from './components/swapi-service-context/swapi-service-context';
 
+import {BrowserRouter as Router, Route} from 'react-router-dom';
+
 export default class App extends Component {
 
   swapiSvc = new SwapiService();
@@ -46,28 +48,36 @@ export default class App extends Component {
     return (
       <div className="App">
 
-        <div className="container">
-          <header className="App-header">
-            < Header />
-          </header>
-        </div>
-
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12">
-              <RandomPlanet/>
-            </div>
+        <Router>
+          <div className="container">
+            <header className="App-header">
+              < Header />
+            </header>
           </div>
 
-          {/* теперь можно обернуть приложение в провайдер, чтобы любой компонент приложения имел доступ к сервису который мы передаем*/}
-          <SwapiServiceProvider value={this.swapiSvc} >
-              <PeopleSection />
-            <br/>
-              <PlanetSection />
-            <br/>
-              <StarshipSection />
-          </SwapiServiceProvider>
-        </div>
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-12">
+                <RandomPlanet/>
+              </div>
+            </div>
+
+            {/* теперь можно обернуть приложение в провайдер, чтобы любой компонент приложения имел доступ к сервису который мы передаем*/}
+            <SwapiServiceProvider value={this.swapiSvc} >
+              
+                  {/* <PeopleSection />
+                <br/>
+                  <PlanetSection />
+                <br/>
+                  <StarshipSection /> */}
+                  <Route path="/people" component={PeopleSection} />
+                  <Route path="/planets" component={PlanetSection} />
+                  <Route path="/starships" component={StarshipSection} />
+              
+            </SwapiServiceProvider>
+          </div>
+        </Router>
+        
       </div>
     );
   }
