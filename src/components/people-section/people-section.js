@@ -1,18 +1,16 @@
 import React, {Component} from 'react';
 import './people-section.css';
 import ErrorIndicator from '../error-indicator/error-indicator';
-import SwapiService from '../../services/swapiService';
-import Row from '../row/row';
 import ErrorBoundry from '../error-boundry/error-boundry';
 import { PersonList } from '../sw-components/item-lists';
-import {PersonDetails } from '../sw-components/person-details';
+import { PersonDetails } from './../sw-components/person-details';
+import { withRouter } from 'react-router-dom';
+import Row from './../row/row';
 
-export default class PeopleSection extends Component {
 
-    swapiSvc = new SwapiService();
+class PeopleSection extends Component {
 
     state = {
-        selectedPerson: null,
         error: false
       };
 
@@ -22,11 +20,6 @@ export default class PeopleSection extends Component {
         })
     }
 
-    onPersonSelected = (id) => {
-        this.setState({
-          selectedPerson: id
-        })
-      };
 
 
     render() {
@@ -34,24 +27,15 @@ export default class PeopleSection extends Component {
             return <ErrorIndicator />
         }
 
-    const itemList = (
-        <ErrorBoundry>
-            <PersonList onItemSelected={this.onPersonSelected} />
-        </ErrorBoundry>
-    );
-
-    const itemDetail = (
-        <ErrorBoundry>
-            < PersonDetails itemId={this.state.selectedPerson}/>
-        </ErrorBoundry>
-    );
-
-
+        const {history, match} = this.props;
+        const { id } = match.params;
         return(
-            <ErrorBoundry>
-                < Row left={itemList} right={itemDetail} />
-                {/* // < Row left={<p>Hello</p>} right={<span>WORLD </span>} /> */}
-            </ErrorBoundry>
+        <ErrorBoundry>
+            < Row left={<PersonList onItemSelected={ (id) => history.push(id)} />}
+                right={<PersonDetails itemId={id}/>} />
+        </ErrorBoundry>
         );
     };
 }
+
+export default withRouter(PeopleSection);

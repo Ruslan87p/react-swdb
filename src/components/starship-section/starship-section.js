@@ -1,22 +1,14 @@
 import React, {Component} from 'react';
 import ErrorIndicator from '../error-indicator/error-indicator';
-import SwapiService from '../../services/swapiService';
 import './starship-section.css';
-
-import Row from '../row/row';
 import ErrorBoundry from '../error-boundry/error-boundry';
 import { StarshipList } from '../sw-components/item-lists';
-import {StarshipDetails} from '../sw-components/starship-details';
+import { withRouter } from 'react-router-dom';
 
 
-
-
-export default class StarshipSection extends Component {
-
-    swapiSvc = new SwapiService();
+class StarshipSection extends Component {
 
     state = {
-        selectedStarship: null,
         error: false
       };
 
@@ -26,35 +18,21 @@ export default class StarshipSection extends Component {
         })
     }
 
-    onStarshipSelected = (id) => {
-        this.setState({
-            selectedStarship: id
-        })
-      };
-
-
     render() {
         if (this.state.error) {
             return <ErrorIndicator />
         }
 
-    const itemList = (
+    const {history} = this.props;
+    return(
         <ErrorBoundry>
-            <StarshipList onItemSelected={this.onStarshipSelected} />
+            <StarshipList onItemSelected={(itemId) => {
+                history.push(itemId);
+            }} />
         </ErrorBoundry>
     );
-
-    const itemDetail = (
-        <ErrorBoundry>
-            < StarshipDetails itemId={this.state.selectedStarship}/>
-        </ErrorBoundry>
-    );
-
-
-        return(
-            <ErrorBoundry>
-                < Row left={itemList} right={itemDetail} />
-            </ErrorBoundry>
-        );
     };
 }
+
+// Теперь компонент высшего порядка withRouter передаст в StarshipSection те самые 3 объекта, что использует React Router (match, location, history)
+export default withRouter(StarshipSection)
